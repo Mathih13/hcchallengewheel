@@ -37,6 +37,13 @@ function HardcoreChallengeWheel:OnInitialize()
         type = "group",
         name = "Hardcore Challenge Wheel",
         args = {
+            introText = {
+                type = "description",
+                name = "Welcome to the Hardcore Challenge Wheel settings! Below, you can enable or disable challenges to customize your experience.\n\nYou can also access settings quickly by right-clicking the title or icon of your current challenge.",
+                fontSize = "medium", -- Options: "small", "medium", "large"
+                order = 1 -- Order determines the display order
+            },
+            settingsHeader = {type = "header", name = "Settings", order = 2},
             generalSettings = {
                 type = "group",
                 name = "General Settings",
@@ -137,7 +144,7 @@ function HardcoreChallengeWheel:OnInitialize()
 
     if HardcoreChallengeWheel.db.char.selectedChallenge then
         HardcoreChallengeWheel:OpenReminderFrame()
-        reminderFrame:SetChallenge(HardcoreChallengeWheel.db.profile
+        reminderFrame:SetChallenge(HardcoreChallengeWheel.db.char
                                        .selectedChallenge)
     end
 
@@ -247,7 +254,7 @@ function HardcoreChallengeWheel:OpenReminderFrame()
     reminderFrame:Show()
 
     if HardcoreChallengeWheel.db.char.selectedChallenge ~= nil then
-        reminderFrame:SetChallenge(HardcoreChallengeWheel.db.profile
+        reminderFrame:SetChallenge(HardcoreChallengeWheel.db.char
                                        .selectedChallenge)
     end
 end
