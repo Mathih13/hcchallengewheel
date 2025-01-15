@@ -1,7 +1,7 @@
 ## Interface: 11403
 ## Title: Hardcore Challenge Wheel
 ## Notes: Random hardcore challenge every level!
-## Author: YourName
+## Author: Scarlex
 ## Version: 1.0.0
 ## Dependencies: Hardcore
 ## SavedVariables: HardcoreChallengeWheelDB
