@@ -144,36 +144,37 @@ local function BuildOptions()
             }
         }
     }
+    print("Options initalize")
 
     for name, challenge in pairs(_G.achievements) do
         local name = challenge.title
         local description = challenge.description
 
-        if challenge.class ~= "All" and challenge.class ~=
-            HardcoreChallengeWheel.db.profile.class then
-            name = "|cFF808080" .. name .. "|r"
-            description = description ..
-                              "\n\n|cFF808080This challenge is not available for your class.|r"
+        -- if challenge.class ~= "All" and challenge.class ~=
+        --     HardcoreChallengeWheel.db.profile.class then
+        --     name = "|cFF808080" .. name .. "|r"
+        --     description = description ..
+        --                       "\n\n|cFF808080This challenge is not available for your class.|r"
 
-        end
+        -- end
 
-        if HardcoreChallengeWheel.db.profile.challenges[challenge.name] == nil then
-            HardcoreChallengeWheel.db.profile.challenges[challenge.name] = true
-        end
+        -- if HardcoreChallengeWheel.db.profile.challenges[challenge.name] == nil then
+        --     HardcoreChallengeWheel.db.profile.challenges[challenge.name] = true
+        -- end
 
-        optionsTable.args.enabledChallenges.args[challenge.name] = {
-            type = "toggle",
-            name = "|T" .. challenge.icon_path .. ":24:24:0:0|t " .. name,
-            desc = description,
-            set = function(info, val)
-                HardcoreChallengeWheel.db.profile.challenges[challenge.name] =
-                    val
-            end,
-            get = function(info)
-                return
-                    HardcoreChallengeWheel.db.profile.challenges[challenge.name]
-            end
-        }
+        -- optionsTable.args.enabledChallenges.args[challenge.name] = {
+        --     type = "toggle",
+        --     name = "|T" .. challenge.icon_path .. ":24:24:0:0|t " .. name,
+        --     desc = description,
+        --     set = function(info, val)
+        --         HardcoreChallengeWheel.db.profile.challenges[challenge.name] =
+        --             val
+        --     end,
+        --     get = function(info)
+        --         return
+        --             HardcoreChallengeWheel.db.profile.challenges[challenge.name]
+        --     end
+        -- }
 
     end
 
@@ -181,8 +182,6 @@ local function BuildOptions()
     AceConfig:RegisterOptionsTable("HardcoreChallengeWheel", optionsTable)
     AceConfigDialog:AddToBlizOptions("HardcoreChallengeWheel",
                                      "Hardcore Challenge Wheel")
-
-    HardcoreChallengeWheel:OpenIconPicker()
 end
 
 HardcoreChallengeWheel:RegisterMessage("AddonInitialized",
