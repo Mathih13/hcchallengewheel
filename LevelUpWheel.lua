@@ -1,12 +1,14 @@
 local frameWidth = 300 -- Width of the rolling area (to show more icons)
 local frameHeight = 100 -- Height of the rolling area
 local iconSize = 64 -- Size of each texture
-local holdTime = 5 
+local holdTime = 5
+local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
+                                   "HardcoreChallengeWheel")
 
 -- Create the rolling area frame
 local frame = CreateFrame("Frame", "RollingTexturesFrame", UIParent)
 frame:SetSize(frameWidth, frameHeight)
-frame:SetPoint("CENTER", UIParent, "CENTER", 0, 200) 
+frame:SetPoint("CENTER", UIParent, "CENTER", 0, 200)
 
 -- Function to create the glowing highlight animation
 local function CreateGlowAnimation(frame)
@@ -70,8 +72,9 @@ local function FadeOutFrame(frame, duration, startingAlpha)
 end
 
 -- Function to create and animate the rolling textures
-local function CreateRollingTextures(challengeData, highlightIndex, challenge,
-                                     rollDuration, reminderFrame)
+function HardcoreChallengeWheel:CreateRollingTextures(challengeData,
+                                                      highlightIndex, challenge,
+                                                      rollDuration)
     local iconsToShow = math.floor(frameWidth / iconSize) -- Number of icons to fit inside the rolling area
     local paddingIcons = iconsToShow * 2 -- Show more icons for smooth entry and exit
     local totalIcons = #challengeData + (paddingIcons * 2) -- Total icons including decorations
@@ -167,7 +170,7 @@ local function CreateRollingTextures(challengeData, highlightIndex, challenge,
 
             -- Create glow animation on the highlight frame
             CreateGlowAnimation(highlightFrame)
-            reminderFrame:SetChallenge(challenge)
+            HardcoreChallengeWheel.reminderFrame:SetChallenge(challenge)
 
             -- Fade out surrounding textures after the highlight
             C_Timer.After(holdTime, function()
@@ -189,5 +192,3 @@ local function CreateRollingTextures(challengeData, highlightIndex, challenge,
         end
     end)
 end
-
-HardcoreChallengeWheel_CreateRollingTextures = CreateRollingTextures

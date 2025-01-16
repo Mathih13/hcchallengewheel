@@ -5,6 +5,8 @@ Reminder Frame Container
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon("HardcoreChallengeWheel")
+
 
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type

@@ -1,23 +1,28 @@
--- GUI.lua
+local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
+                                   "HardcoreChallengeWheel")
 local AceGUI = LibStub("AceGUI-3.0")
 
--- Function to create and display the GUI frame
-local function CreateMainFrame()
-    local reminder_frame = AceGUI:Create("CurrentChallenge")
+function HardcoreChallengeWheel:OpenReminderFrame()
 
-    -- reminder_frame:SetLayout("Fill")
-    reminder_frame:SetWidth(255)
-    reminder_frame:SetHeight(125)
+    if HardcoreChallengeWheel.reminderFrame then
+        HardcoreChallengeWheel.reminderFrame:Hide()
+        HardcoreChallengeWheel.reminderFrame = nil
+    end
 
-    return reminder_frame
+    if HardcoreChallengeWheel.db.profile.minimalMode then
+        HardcoreChallengeWheel.reminderFrame = AceGUI:Create("CurrentChallenge")
+
+        HardcoreChallengeWheel.reminderFrame:SetWidth(255)
+        HardcoreChallengeWheel.reminderFrame:SetHeight(125)
+    else
+        HardcoreChallengeWheel.reminderFrame = AceGUI:Create(
+                                                   "CurrentChallengeMinimal")
+    end
+    HardcoreChallengeWheel.reminderFrame:Show()
+
+    if HardcoreChallengeWheel.db.char.selectedChallenge ~= nil then
+        HardcoreChallengeWheel.reminderFrame:SetChallenge(
+            HardcoreChallengeWheel.db.char.selectedChallenge)
+    end
 end
 
-local function CreateMinimalFrame()
-
-    return AceGUI:Create("CurrentChallengeMinimal")
-end
-
-
--- Expose the function to be accessible from other files
-HardcoreChallengeWheel_CreateReminderFrame = CreateMainFrame
-HardcoreChallengeWheel_CreateReminderFrameMinimal = CreateMinimalFrame
