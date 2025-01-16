@@ -14,11 +14,10 @@ local defaults = {
             ["NoHit"] = false
         },
         defaultDisabledChallenges = {"NoHit"},
-        class = UnitClass("player")
+        class = UnitClass("player"),
+        showReminderFrame = true
     }
 }
-
-local reminderFrame
 
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -28,6 +27,7 @@ function HardcoreChallengeWheel:OnInitialize()
     -- Load the database
     self.db = LibStub("AceDB-3.0"):New("HardcoreChallengeWheelDB", defaults,
                                        true)
+    self.reminderFrame = nil
 
     if not IsAddOnLoaded("Blizzard_ClassicUIResources") then
         LoadAddOn("Blizzard_ClassicUIResources") -- Ensures dropdown functionality is available
@@ -46,21 +46,48 @@ function HardcoreChallengeWheel:OnInitialize()
             settingsHeader = {type = "header", name = "Settings", order = 2},
             generalSettings = {
                 type = "group",
+                order = 2,
                 name = "General Settings",
                 desc = "Settings related to general features.",
                 inline = false, -- Makes it collapsible if false
                 args = {
-                    minimalMode = {
-                        type = "toggle",
-                        name = "Minimal Mode",
-                        desc = "Toggle between the minimal and detailed display for the current challenge.",
-                        set = function(info, val)
-                            HardcoreChallengeWheel.db.profile.minimalMode = val
-                            HardcoreChallengeWheel:OpenReminderFrame()
-                        end,
-                        get = function(info)
-                            return HardcoreChallengeWheel.db.profile.minimalMode
-                        end
+                    displayGroup = {
+                        type = "group",
+                        name = "Display",
+                        inline = true,
+                        order = 1,
+                        args = {
+                            showReminderFrame = {
+                                type = "toggle",
+                                order = 1,
+                                name = "Show Current Challenge",
+                                desc = "Toggle the visibility of the current challenge reminder frame.",
+                                set = function(info, val)
+                                    HardcoreChallengeWheel:SetShowReminderFrame(
+                                        val)
+                                end,
+                                get = function(info)
+                                    return
+                                        HardcoreChallengeWheel.db.profile
+                                            .showReminderFrame
+                                end
+                            },
+                            minimalMode = {
+                                type = "toggle",
+                                name = "Minimal Mode",
+                                desc = "Toggle between the minimal and detailed display for the current challenge.",
+                                set = function(info, val)
+                                    HardcoreChallengeWheel.db.profile
+                                        .minimalMode = val
+                                    HardcoreChallengeWheel:OpenReminderFrame()
+                                end,
+                                get = function(info)
+                                    return
+                                        HardcoreChallengeWheel.db.profile
+                                            .minimalMode
+                                end
+                            }
+                        }
                     },
                     wheelSpinDuration = {
                         type = "range",
@@ -80,7 +107,7 @@ function HardcoreChallengeWheel:OnInitialize()
                     }
                 }
             },
-            itemListGroup = {
+            enabledChallenges = {
                 type = "group",
                 name = "Enabled Challenges",
                 desc = "Select which challenges are enabled.",
@@ -106,7 +133,7 @@ function HardcoreChallengeWheel:OnInitialize()
             HardcoreChallengeWheel.db.profile.challenges[challenge.name] = true
         end
 
-        optionsTable.args.itemListGroup.args[challenge.name] = {
+        optionsTable.args.enabledChallenges.args[challenge.name] = {
             type = "toggle",
             name = "|T" .. challenge.icon_path .. ":24:24:0:0|t " .. name,
             desc = description,
@@ -144,8 +171,8 @@ function HardcoreChallengeWheel:OnInitialize()
 
     if HardcoreChallengeWheel.db.char.selectedChallenge then
         HardcoreChallengeWheel:OpenReminderFrame()
-        reminderFrame:SetChallenge(HardcoreChallengeWheel.db.char
-                                       .selectedChallenge)
+        HardcoreChallengeWheel.reminderFrame:SetChallenge(
+            HardcoreChallengeWheel.db.char.selectedChallenge)
     end
 
 end
@@ -196,14 +223,16 @@ function HardcoreChallengeWheel:RollChallenge()
     table.insert(appropriateChallenges, middleIndex, selectedChallenge)
     selectedChallengeIndex = middleIndex -- Update the index to the new middle
 
-    if reminderFrame == nil then HardcoreChallengeWheel:OpenReminderFrame() end
+    if HardcoreChallengeWheel.reminderFrame == nil then
+        HardcoreChallengeWheel:OpenReminderFrame()
+    end
     HardcoreChallengeWheel.db.char.selectedChallenge = selectedChallenge
     HardcoreChallengeWheel_CreateRollingTextures(appropriateChallenges,
                                                  selectedChallengeIndex,
                                                  selectedChallenge,
                                                  HardcoreChallengeWheel.db
                                                      .profile.wheelSpinDuration,
-                                                 reminderFrame)
+                                                 HardcoreChallengeWheel.reminderFrame)
 end
 
 function HardcoreChallengeWheel:GetAppropriateChallenges()
@@ -241,20 +270,27 @@ end
 
 function HardcoreChallengeWheel:OpenReminderFrame()
 
-    if reminderFrame then
-        reminderFrame:Hide()
-        reminderFrame = nil
+    if HardcoreChallengeWheel.reminderFrame then
+        HardcoreChallengeWheel.reminderFrame:Hide()
+        HardcoreChallengeWheel.reminderFrame = nil
     end
 
     if HardcoreChallengeWheel.db.profile.minimalMode then
-        reminderFrame = HardcoreChallengeWheel_CreateReminderFrameMinimal()
+        HardcoreChallengeWheel.reminderFrame =
+            HardcoreChallengeWheel_CreateReminderFrameMinimal()
     else
-        reminderFrame = HardcoreChallengeWheel_CreateReminderFrame()
+        HardcoreChallengeWheel.reminderFrame =
+            HardcoreChallengeWheel_CreateReminderFrame()
     end
-    reminderFrame:Show()
 
     if HardcoreChallengeWheel.db.char.selectedChallenge ~= nil then
-        reminderFrame:SetChallenge(HardcoreChallengeWheel.db.char
-                                       .selectedChallenge)
+        HardcoreChallengeWheel.reminderFrame:SetChallenge(
+            HardcoreChallengeWheel.db.char.selectedChallenge)
+    end
+
+    if HardcoreChallengeWheel.db.profile.showReminderFrame then
+        HardcoreChallengeWheel.reminderFrame:Show()
+    else
+        HardcoreChallengeWheel.reminderFrame:Hide()
     end
 end

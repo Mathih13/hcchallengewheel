@@ -5,6 +5,7 @@ Reminder Frame Container
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
@@ -103,6 +104,14 @@ local function ShowRightClickMenu(parentFrame)
         }, {
             text = "Reroll",
             func = function() HardcoreChallengeWheel:RollChallenge() end,
+            notCheckable = true
+        }, {
+            text = "Hide",
+            func = function()
+
+                HardcoreChallengeWheel:SetShowReminderFrame(false)
+                AceConfigRegistry:NotifyChange("HardcoreChallengeWheel")
+            end,
             notCheckable = true
         }, {
             text = "Close",
@@ -255,17 +264,6 @@ local function Constructor()
     local title = CreateFrame("Frame", nil, frame)
     title:EnableMouse(true)
 
-    title:SetScript("OnMouseDown", function(self, button)
-        if button == "RightButton" then
-            ShowRightClickMenu(self)
-        else
-            if frame:IsMovable() then
-                frame:StartMoving() -- Start moving the frame
-            end
-        end
-    end)
-
-    title:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
     title:SetAllPoints(titlebg)
 
     local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -277,6 +275,18 @@ local function Constructor()
     challengeIcon:SetSize(48, 48)
 
     challengeIcon:SetPoint("LEFT", frame, "TOPLEFT", -15, -10)
+
+    challengeIcon:SetScript("OnMouseDown", function(self, button)
+        if button == "RightButton" then
+            ShowRightClickMenu(self)
+        else
+            if frame:IsMovable() then
+                frame:StartMoving() -- Start moving the frame
+            end
+        end
+    end)
+
+    challengeIcon:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
 
     local challengeIconTexture = challengeIcon:CreateTexture(nil, "BACKGROUND")
     challengeIconTexture:SetAllPoints(challengeIcon)
