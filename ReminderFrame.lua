@@ -26,3 +26,13 @@ function HardcoreChallengeWheel:OpenReminderFrame()
     end
 end
 
+function HardcoreChallengeWheel:SetShowReminderFrame(showReminderFrame)
+    if showReminderFrame then
+        HardcoreChallengeWheel.db.profile.showReminderFrame = true
+        HardcoreChallengeWheel.reminderFrame:Show()
+    else
+        HardcoreChallengeWheel.db.profile.showReminderFrame = false
+        HardcoreChallengeWheel.reminderFrame:Hide()
+    end
+end
+

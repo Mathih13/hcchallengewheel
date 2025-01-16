@@ -6,6 +6,7 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon("HardcoreChallengeWheel")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
@@ -110,15 +111,18 @@ local function ShowRightClickMenu(self)
                 AceConfigDialog:Open("HardcoreChallengeWheel")
             end,
             notCheckable = true
-        },
-        {
+        }, {
             text = "Reroll",
+            func = function() HardcoreChallengeWheel:RollChallenge() end,
+            notCheckable = true
+        }, {
+            text = "Hide",
             func = function()
-                HardcoreChallengeWheel:RollChallenge()
+                HardcoreChallengeWheel:SetShowReminderFrame(false)
+                AceConfigRegistry:NotifyChange("HardcoreChallengeWheel")
             end,
             notCheckable = true
-        },
-        {
+        }, {
             text = "Close",
             notCheckable = true,
             func = function() CloseDropDownMenus() end

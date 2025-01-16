@@ -14,9 +14,13 @@ local defaults = {
         },
         defaultDisabledChallenges = {"NoHit"},
         class = UnitClass("player"),
-        savedTalents = {}
+        savedTalents = {},
+        showReminderFrame = true
     }
 }
+
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 -- OnInitialize function (runs when the add-on is loaded)
 function HardcoreChallengeWheel:OnInitialize()
