@@ -14,6 +14,8 @@ Libs\AceDB-3.0\AceDB-3.0.lua
 Libs\AceGUI-3.0\AceGUI-3.0.lua
 Libs\AceConsole-3.0\AceConsole-3.0.lua
 Libs\AceEvent-3.0\AceEvent-3.0.lua
+Libs\AceSerializer-3.0\AceSerializer-3.0.lua
+Libs\AceComm-3.0\AceComm-3.0.lua
 
 main.lua
 
@@ -21,8 +23,9 @@ Data\Challenges.lua
 Data\Icons.lua
 
 core.lua
-ReminderFrame.lua
+FrameControl.lua
 LevelUpWheel.lua
 Options.lua
 IconPicker.lua
+Communication.lua
 embeds.xml

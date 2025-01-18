@@ -1,5 +1,6 @@
 local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
                                    "HardcoreChallengeWheel")
+local challengesModule = HardcoreChallengeWheel:GetModule("Challenges")
 
 -- Database defaults
 local defaults = {
@@ -9,7 +10,11 @@ local defaults = {
             ["TrioMade"] = false,
             ["PartnerUp"] = false,
             ["DuoMade"] = false,
-            ["NoHit"] = false
+            ["NoHit"] = false,
+            ["NightOwl"] = false,
+            ["SolitaryStruggle"] = false,
+            ["FishingPoleOnly"] = false,
+            ["CrusaderOnly"] = false
         },
         defaultDisabledChallenges = {"NoHit"},
         class = UnitClass("player"),
@@ -22,6 +27,7 @@ function HardcoreChallengeWheel:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("HardcoreChallengeWheelDB", defaults,
                                        true)
     self.reminderFrame = nil
+    self.targetChallengeFrame = nil
     self.customChallengeForm = {}
 
     if not IsAddOnLoaded("Blizzard_ClassicUIResources") then
@@ -37,6 +43,13 @@ function HardcoreChallengeWheel:OnInitialize()
 
     levelUpFrame:SetScript("OnEvent", function(self, event, newLevel, ...)
         if event == "PLAYER_LEVEL_UP" then
+
+            if self.db.char.selectedChallenge then
+                SendChatMessage("has completed the level challenge [" ..
+                                    self.db.char.selectedChallenge.title .. "]!",
+                                "EMOTE")
+            end
+
             HardcoreChallengeWheel:RollChallenge()
         end
 
@@ -48,18 +61,14 @@ function HardcoreChallengeWheel:OnInitialize()
         self.reminderFrame:SetChallenge(HardcoreChallengeWheel.db.char
                                             .selectedChallenge)
     end
-    self:SendMessage("AddonInitialized")
+
+    HardcoreChallengeWheel:InitTargetFrame()
 end
 
-function HardcoreChallengeWheel:SwapReminderMode()
-    if HardcoreChallengeWheel.db.profile.minimalMode then
-        HardcoreChallengeWheel.db.profile.minimalMode = false
-    else
-        HardcoreChallengeWheel.db.profile.minimalMode = true
-    end
-
-    HardcoreChallengeWheel:OpenReminderFrame()
-end
+HardcoreChallengeWheel:RegisterMessage("AddonInitialized", function()
+    HardcoreChallengeWheel:HookTargetChanged()
+    HardcoreChallengeWheel:BuildOptions()
+end)
 
 function HardcoreChallengeWheel:SlashCommand(input)
     if not input or input:trim() == "" then
@@ -68,7 +77,25 @@ function HardcoreChallengeWheel:SlashCommand(input)
         HardcoreChallengeWheel:RollChallenge()
     elseif input == "swap" then
         HardcoreChallengeWheel:SwapReminderMode()
+    elseif input == "requestchallenge" then
+        HardcoreChallengeWheel:RequestChallengeFromTarget()
+    elseif input == "receive" then
+        local appropriateChallenges =
+            HardcoreChallengeWheel:GetAppropriateChallenges();
+        local selectedChallengeIndex = math.random(1,
+                                                   HardcoreChallengeWheel:GetTablelength(
+                                                       appropriateChallenges))
+        local selectedChallenge = appropriateChallenges[selectedChallengeIndex]
+        local data = {
+            name = selectedChallenge.name,
+            title = selectedChallenge.title,
+            description = selectedChallenge.description,
+            icon_path = selectedChallenge.icon_path
+        }
+        local serializedData = LibStub("AceSerializer-3.0"):Serialize(data)
 
+        HardcoreChallengeWheel:OnCommReceived("HCWHEEL", serializedData,
+                                              "WHISPER", UnitName("player"))
     else
         self:Print("Invalid command. Use `/hcwheel` to open the interface.")
     end
@@ -109,10 +136,10 @@ function HardcoreChallengeWheel:RollChallenge()
 end
 
 function HardcoreChallengeWheel:GetAppropriateChallenges()
-    local finished = false;
     local appropriateChallenges = {}
+    local allChallenges = challengesModule:GetAllChallenges()
 
-    for name, challenge in pairs(_G.achievements) do
+    for name, challenge in pairs(allChallenges) do
         if challenge ~= nil and
             HardcoreChallengeWheel.db.profile.challenges[name] then
             local class = UnitClass("player")

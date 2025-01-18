@@ -82,17 +82,9 @@ local function SizerE_OnMouseDown(frame)
 end
 
 local function ShowRightClickMenu(parentFrame)
-    local swapModeText = ""
-
-    if HardcoreChallengeWheel.db.profile.minimalMode then
-        swapModeText = "Switch to detailed mode"
-    else
-        swapModeText = "Switch to minimal mode"
-    end
-
     local dropdownItems = {
         {
-            text = swapModeText,
+            text = "Switch to minimal mode",
             func = function()
                 HardcoreChallengeWheel:SwapReminderMode()
             end,
@@ -292,6 +284,22 @@ local function Constructor()
 
     local challengeIconTexture = challengeIcon:CreateTexture(nil, "BACKGROUND")
     challengeIconTexture:SetAllPoints(challengeIcon)
+
+    local mask = challengeIcon:CreateMaskTexture()
+    mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask",
+                    "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE") -- Built-in circular mask
+    mask:SetAllPoints()
+
+    -- Apply the mask to the texture
+    challengeIconTexture:AddMaskTexture(mask)
+
+
+    local border = challengeIcon:CreateTexture(nil, "OVERLAY")
+    border:SetTexture("Interface\\COMMON\\BlueMenuRing")
+    border:SetPoint("CENTER", challengeIconTexture, "CENTER", 7, -7)
+    border:SetDrawLayer("OVERLAY", 2)
+    border:SetHeight(80)
+    border:SetWidth(80)
 
     -- Container Support
     local content = CreateFrame("Frame", nil, frame)

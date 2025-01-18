@@ -99,16 +99,40 @@ function HardcoreChallengeWheel:CreateRollingTextures(challengeData,
         local texturePath = fullList[i].icon_path
 
         local texFrame = CreateFrame("Frame", nil, frame)
-        texFrame:SetSize(iconSize, iconSize)
+
+        if fullList[i].origin == "built-in" then
+            texFrame:SetSize(iconSize * 0.7, iconSize * 0.7)
+        else
+            texFrame:SetSize(iconSize, iconSize)
+        end
 
         -- Calculate initial position to line up icons horizontally
         local offsetX = (i - 1 - paddingIcons) * iconSize
         texFrame:SetPoint("CENTER", frame, "CENTER", offsetX, 0)
 
         -- Main texture
-        local texture = texFrame:CreateTexture(nil, "BACKGROUND")
+        local texture = texFrame:CreateTexture(nil, "ARTWORK")
         texture:SetAllPoints(texFrame)
         texture:SetTexture(texturePath)
+
+        if fullList[i].origin == "built-in" then
+            -- Create a circular mask
+            local mask = texFrame:CreateMaskTexture()
+            mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask",
+                            "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE") -- Built-in circular mask
+            mask:SetAllPoints()
+
+            -- Apply the mask to the texture
+            texture:AddMaskTexture(mask)
+
+            local border = texFrame:CreateTexture(nil, "OVERLAY")
+            border:SetTexture("Interface\\COMMON\\BlueMenuRing")
+            border:SetPoint("CENTER", texture, "CENTER", 8, -10)
+            border:SetDrawLayer("OVERLAY", 2)
+            border:SetHeight(iconSize * 1.35)
+            border:SetWidth(iconSize * 1.35)
+
+        end
 
         -- Store frame details
         table.insert(textureFrames, {frame = texFrame, startX = offsetX})

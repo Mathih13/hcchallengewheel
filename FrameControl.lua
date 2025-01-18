@@ -36,3 +36,23 @@ function HardcoreChallengeWheel:SetShowReminderFrame(showReminderFrame)
     end
 end
 
+function HardcoreChallengeWheel:SwapReminderMode()
+    if HardcoreChallengeWheel.db.profile.minimalMode then
+        HardcoreChallengeWheel.db.profile.minimalMode = false
+    else
+        HardcoreChallengeWheel.db.profile.minimalMode = true
+    end
+
+    HardcoreChallengeWheel:OpenReminderFrame()
+end
+
+function HardcoreChallengeWheel:InitTargetFrame()
+    if HardcoreChallengeWheel.targetChallengeFrame then
+        HardcoreChallengeWheel.targetChallengeFrame:Hide()
+        HardcoreChallengeWheel.targetChallengeFrame = nil
+    end
+
+    HardcoreChallengeWheel.targetChallengeFrame = AceGUI:Create(
+                                                      "TargetChallenge")
+    
+end
