@@ -268,7 +268,7 @@ local function Constructor()
     local challengeIcon = CreateFrame("Frame", nil, frame)
     challengeIcon:SetSize(48, 48)
 
-    challengeIcon:SetPoint("LEFT", frame, "TOPLEFT", -15, -10)
+    challengeIcon:SetPoint("LEFT", frame, "TOPLEFT", -20, -5)
 
     challengeIcon:SetScript("OnMouseDown", function(self, button)
         if button == "RightButton" then
@@ -295,11 +295,11 @@ local function Constructor()
 
 
     local border = challengeIcon:CreateTexture(nil, "OVERLAY")
-    border:SetTexture("Interface\\COMMON\\BlueMenuRing")
-    border:SetPoint("CENTER", challengeIconTexture, "CENTER", 7, -7)
+    border:SetTexture("Interface\\AddOns\\HardcoreChallengeWheel\\Textures\\CovenantRenownRing")
+    border:SetPoint("CENTER", challengeIconTexture, "CENTER", 0, 0)
     border:SetDrawLayer("OVERLAY", 2)
-    border:SetHeight(80)
-    border:SetWidth(80)
+    border:SetHeight(52)
+    border:SetWidth(52)
 
     -- Container Support
     local content = CreateFrame("Frame", nil, frame)

@@ -1,6 +1,7 @@
 local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
                                    "HardcoreChallengeWheel")
 local challengesModule = HardcoreChallengeWheel:GetModule("Challenges")
+local CURRENT_VERSION = "1.1.0"
 
 -- Database defaults
 local defaults = {
@@ -18,12 +19,16 @@ local defaults = {
         },
         defaultDisabledChallenges = {"NoHit"},
         class = UnitClass("player"),
-        savedTalents = {}
-    }
+        savedTalents = {},
+        customChallenges = {},
+        announceChallenge = true,
+        announceChannel = "EMOTE",
+        showTargetChallenge = true
+    },
+    char = {cachedTargetChallenges = {}}
 }
 
 function HardcoreChallengeWheel:OnInitialize()
-    -- Load the database
     self.db = LibStub("AceDB-3.0"):New("HardcoreChallengeWheelDB", defaults,
                                        true)
     self.reminderFrame = nil
@@ -53,7 +58,6 @@ function HardcoreChallengeWheel:OnInitialize()
             HardcoreChallengeWheel:RollChallenge()
         end
 
-        print(event)
     end)
 
     if HardcoreChallengeWheel.db.char.selectedChallenge then
@@ -63,10 +67,21 @@ function HardcoreChallengeWheel:OnInitialize()
     end
 
     HardcoreChallengeWheel:InitTargetFrame()
+
+    local storedVersion = self.db.global.addonVersion or "0.0.0"
+    if storedVersion ~= CURRENT_VERSION then
+        self:ShowUpdateScreen(storedVersion, CURRENT_VERSION)
+        self.db.global.addonVersion = CURRENT_VERSION
+    end
+
 end
 
 HardcoreChallengeWheel:RegisterMessage("AddonInitialized", function()
-    HardcoreChallengeWheel:HookTargetChanged()
+
+    if HardcoreChallengeWheel.db.profile.showTargetChallenge then
+        HardcoreChallengeWheel:HookTargetChanged()
+    end
+
     HardcoreChallengeWheel:BuildOptions()
 end)
 
@@ -166,4 +181,15 @@ function HardcoreChallengeWheel:GetTablelength(T)
     local count = 0
     for _ in pairs(T) do count = count + 1 end
     return count
+end
+
+function HardcoreChallengeWheel:AddCustomChallenge(title, description, iconID)
+    local noSpacedTitle = title:gsub(" ", "")
+    local challenge = {
+        name = "custom_" .. noSpacedTitle,
+        title = title,
+        description = description,
+        icon_path = iconID
+    }
+
 end

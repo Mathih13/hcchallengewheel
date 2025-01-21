@@ -54,5 +54,13 @@ function HardcoreChallengeWheel:InitTargetFrame()
 
     HardcoreChallengeWheel.targetChallengeFrame = AceGUI:Create(
                                                       "TargetChallenge")
-    
+end
+
+function HardcoreChallengeWheel:ToggleTargetFrame()
+    if HardcoreChallengeWheel.db.profile.showTargetChallenge then
+        HardcoreChallengeWheel:HookTargetChanged()
+    else
+        HardcoreChallengeWheel:UnhookTargetChanged()
+        
+    end
 end

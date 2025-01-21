@@ -1,15 +1,22 @@
 local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
                                    "HardcoreChallengeWheel")
 
+local eventFrame
+
 function HardcoreChallengeWheel:RequestChallengeFromTarget()
+    local targetName = UnitName("target")
     self.targetChallengeFrame:Hide()
 
+    if targetName == UnitName("player") then return end
+
+    if self.db.char.cachedTargetChallenges[targetName] then
+        self.targetChallengeFrame:SetChallenge(self.db.char
+                                                   .cachedTargetChallenges[targetName])
+        self.targetChallengeFrame:Show()
+    end
+
     if not UnitIsPlayer("target") then return end
-    local targetName = UnitName("target")
 
-    -- if targetName == UnitName("player") then return end
-
-    print("Requesting challenge from", targetName)
     if targetName then
         HardcoreChallengeWheel:SendCommMessage("HCWHEEL", "REQUEST_CHALLENGE",
                                                "WHISPER", targetName)
@@ -21,7 +28,6 @@ function HardcoreChallengeWheel:OnCommReceived(prefix, message, distribution,
     if prefix ~= "HCWHEEL" then return end
 
     if message == "REQUEST_CHALLENGE" then
-        print("Received REQUEST_CHALLENGE from", sender)
         if self.db.char.selectedChallenge then
             local data = {
                 name = self.db.char.selectedChallenge.name,
@@ -30,31 +36,28 @@ function HardcoreChallengeWheel:OnCommReceived(prefix, message, distribution,
                 icon_path = self.db.char.selectedChallenge.icon_path
             }
             local serializedData = LibStub("AceSerializer-3.0"):Serialize(data)
-            print("Sending challenge to", sender)
-            print(serializedData)
             HardcoreChallengeWheel:SendCommMessage("HCWHEEL", serializedData,
                                                    "WHISPER", sender)
         end
     else
+
         -- Handle other incoming data (e.g., received challenges)
         local success, data = LibStub("AceSerializer-3.0"):Deserialize(message)
-        print("Received data from", sender)
         if success then
-            self.db.char.targetChallenge = data
-            self.targetChallengeFrame:SetChallenge(data)
-            self.targetChallengeFrame:Show()
-
+            self.db.char.cachedTargetChallenges[sender] = data
         end
     end
 end
 
 function HardcoreChallengeWheel:HookTargetChanged()
 
-    local frame = CreateFrame("Frame")
-    frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    frame:SetScript("OnEvent", function() self:RequestChallengeFromTarget() end)
+    eventFrame = CreateFrame("Frame")
+    eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    eventFrame:SetScript("OnEvent",
+                         function() self:RequestChallengeFromTarget() end)
 end
 
-HardcoreChallengeWheel:RegisterMessage("AddonInitialized", function()
-    HardcoreChallengeWheel:HookTargetChanged()
-end)
+function HardcoreChallengeWheel:UnhookTargetChanged()
+    eventFrame:UnregisterEvent("PLAYER_TARGET_CHANGED")
+    eventFrame:SetScript("OnEvent", nil)
+end

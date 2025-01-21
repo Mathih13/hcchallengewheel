@@ -2,6 +2,8 @@ local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
                                    "HardcoreChallengeWheel")
 local Challenges = HardcoreChallengeWheel:NewModule("Challenges")
 
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+
 function Challenges:OnInitialize()
     self.HCWheelChallenges = {
         {
@@ -124,26 +126,51 @@ function Challenges:OnInitialize()
             iconPath = 132273,
             blText = "Combat Restriction",
             description = "You may not use poisons on your weapons."
+        }, {
+            name = "NoLifeTap",
+            title = "Frail",
+            class = "Warlock",
+            points = 10,
+            iconPath = 136188,
+            blText = "Combat Restriction",
+            description = "You may not use Life Tap."
+        }, {
+            name = "NoManaRecovery",
+            title = "Inner Focus",
+            class = "Mage",
+            points = 10,
+            iconPath = 135863,
+            blText = "Mana Restriction",
+            description = "You cannot recover mana by drinking.\n\n\124cff00ccffMana gems, mana potions and Evocation are allowed.\124r"
+        }, {
+            name = "OnlyBows",
+            title = "Longbeard",
+            class = "Hunter",
+            points = 10,
+            iconPath = 135491,
+            blText = "Starting Achievement",
+            description = "You may only use Bows and crossbows as your ranged weapons."
+        }, {
+            name = "OnlyGuns",
+            title = "Gunslinger",
+            class = "Hunter",
+            points = 10,
+            iconPath = 135616,
+            description = "You may only use Guns as your ranged weapons."
         }
+
     }
 end
 
 function Challenges:GetChallengeByName(name)
     for key, challenge in ipairs(_G.achievements) do
-        if key == name then
-            print("Found challenge:", challenge.title)
-            return challenge
-        end
+        if key == name then return challenge end
     end
 
     for _, challenge in ipairs(self.HCWheelChallenges) do
-        if challenge.name == name then
-            print("Found challenge:", challenge.title)
-            return challenge
-        end
+        if challenge.name == name then return challenge end
     end
 
-    print("Challenge not found:", name)
     return nil
 end
 
@@ -155,7 +182,7 @@ function Challenges:GetAllChallenges()
     for key, value in pairs(_G.achievements) do mergedChallenges[key] = value end
 
     -- Add transformed HCWheelChallenges into the new table
-    for _, challenge in ipairs(self.HCWheelChallenges) do
+    for _, challenge in pairs(self.HCWheelChallenges) do
         -- Transform challenge to match _G.achievements structure
         local newEntry = {
             title = challenge.title,
@@ -172,6 +199,22 @@ function Challenges:GetAllChallenges()
         mergedChallenges[key] = newEntry
     end
 
+    for _, challenge in
+        pairs(HardcoreChallengeWheel.db.profile.customChallenges) do
+        local newEntry = {
+            title = challenge.title,
+            description = challenge.description,
+            icon_path = challenge.iconPath,
+            class = challenge.class,
+            bl_text = "",
+            name = challenge.name,
+            origin = challenge.origin
+        }
+
+        local key = challenge.name
+        mergedChallenges[key] = challenge
+    end
+
     -- Return the new merged table without modifying _G.achievements
     return mergedChallenges
 end
@@ -179,7 +222,8 @@ end
 function Challenges:GetOptionsData()
     -- Separate challenges by origin
     local achievementsList = {}
-    local customChallengesList = {}
+    local builtInChallenges = {}
+    local customChallenges = {}
 
     -- Add data from _G.achievements
     for key, value in pairs(_G.achievements) do
@@ -197,16 +241,129 @@ function Challenges:GetOptionsData()
             name = challenge.name,
             origin = "built-in"
         }
-        table.insert(customChallengesList,
-                     {key = challenge.name, data = newEntry})
+        table.insert(builtInChallenges, {key = challenge.name, data = newEntry})
+    end
+
+    if HardcoreChallengeWheel.db.profile.customChallenges then
+        -- Add data from customChallenges
+        for key, challenge in pairs(HardcoreChallengeWheel.db.profile
+                                        .customChallenges) do
+
+            local newEntry = {
+                title = challenge.title,
+                description = challenge.description,
+                icon_path = challenge.icon_path,
+                class = challenge.class,
+                name = challenge.name,
+                origin = "custom"
+            }
+            table.insert(customChallenges, {key = key, data = newEntry})
+        end
     end
 
     -- Sort both lists alphabetically by their keys
     table.sort(achievementsList, function(a, b) return a.key < b.key end)
-    table.sort(customChallengesList, function(a, b) return a.key < b.key end)
+    table.sort(builtInChallenges, function(a, b) return a.key < b.key end)
+    table.sort(customChallenges, function(a, b) return a.key < b.key end)
 
     return {
         achievements = achievementsList,
-        customChallenges = customChallengesList
+        builtInChallenges = builtInChallenges,
+        customChallenges = customChallenges
     }
+end
+
+function Challenges:AddCustomChallenge(title, description, iconID, class)
+    local noSpacedTitle = title:gsub(" ", "")
+    local challenge = {
+        name = "CUSTOM" .. noSpacedTitle,
+        title = title,
+        description = description,
+        icon_path = iconID,
+        origin = "custom",
+        class = class
+    }
+
+    HardcoreChallengeWheel.db.profile.customChallenges[challenge.name] =
+        challenge
+
+    -- Add the challenge to the "add custom challenge" group
+    HardcoreChallengeWheel.optionsTable.args.customGroup.args.customChallenges
+        .args[challenge.name] = {
+        type = "group",
+        inline = true,
+        name = "",
+        args = {
+            description = {
+                order = 1,
+                type = "description",
+                name = "|T" .. challenge.icon_path .. ":24:24:0:0|t " ..
+                    challenge.title,
+                fontSize = "medium",
+                width = 1.5
+            },
+            action1 = {
+                order = 2,
+                type = "execute",
+                name = "Edit",
+                func = function()
+                    HardcoreChallengeWheel.customChallengeForm.title = title
+                    HardcoreChallengeWheel.customChallengeForm.description =
+                        description
+                    HardcoreChallengeWheel.customChallengeForm.challengeIconID =
+                        iconID
+                    HardcoreChallengeWheel.customChallengeForm.class = class
+                    HardcoreChallengeWheel.customChallengeForm.key = key
+                    AceConfigRegistry:NotifyChange("HardcoreChallengeWheel")
+                end,
+                width = 0.5
+            },
+            action2 = {
+                order = 3,
+                type = "execute",
+                name = "Delete",
+                func = function()
+                    Challenges:RemoveCustomChallenge(key)
+                end,
+                width = 0.5
+            }
+        }
+    }
+
+    -- Add the challenge to the "enabled challenges" group
+    HardcoreChallengeWheel.optionsTable.args.enabledChallenges.args[challenge.name] =
+        {
+            type = "toggle",
+            name = "|T" .. challenge.icon_path .. ":24:24:0:0|t " ..
+                challenge.title,
+            desc = description,
+            width = "normal",
+            set = function(info, val)
+                HardcoreChallengeWheel.db.profile.challenges[challenge.name] =
+                    val
+            end,
+            get = function(info)
+                return
+                    HardcoreChallengeWheel.db.profile.challenges[challenge.name]
+            end,
+            order = 999
+        }
+
+    HardcoreChallengeWheel.db.profile.challenges[challenge.name] = true
+
+    AceConfigRegistry:NotifyChange("HardcoreChallengeWheel")
+end
+
+function Challenges:RemoveCustomChallenge(name)
+    HardcoreChallengeWheel.db.profile.customChallenges[name] = nil
+
+    -- Rebuild the options for the custom challenges group
+    local customChallengesGroup = HardcoreChallengeWheel.optionsTable.args
+                                      .customGroup.args.customChallenges.args
+    customChallengesGroup[name] = nil -- Remove the entry for the deleted challenge
+
+    -- Remove the entry for the deleted challenge from the "enabled challenges" group
+    HardcoreChallengeWheel.optionsTable.args.enabledChallenges.args[name] = nil
+
+    AceConfigRegistry:NotifyChange("HardcoreChallengeWheel")
 end

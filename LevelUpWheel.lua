@@ -100,7 +100,7 @@ function HardcoreChallengeWheel:CreateRollingTextures(challengeData,
 
         local texFrame = CreateFrame("Frame", nil, frame)
 
-        if fullList[i].origin == "built-in" then
+        if fullList[i].origin ~= nil then
             texFrame:SetSize(iconSize * 0.7, iconSize * 0.7)
         else
             texFrame:SetSize(iconSize, iconSize)
@@ -115,7 +115,7 @@ function HardcoreChallengeWheel:CreateRollingTextures(challengeData,
         texture:SetAllPoints(texFrame)
         texture:SetTexture(texturePath)
 
-        if fullList[i].origin == "built-in" then
+        if fullList[i].origin ~= nil then
             -- Create a circular mask
             local mask = texFrame:CreateMaskTexture()
             mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask",
@@ -126,11 +126,12 @@ function HardcoreChallengeWheel:CreateRollingTextures(challengeData,
             texture:AddMaskTexture(mask)
 
             local border = texFrame:CreateTexture(nil, "OVERLAY")
-            border:SetTexture("Interface\\COMMON\\BlueMenuRing")
-            border:SetPoint("CENTER", texture, "CENTER", 8, -10)
+            border:SetTexture(
+                "Interface\\AddOns\\HardcoreChallengeWheel\\Textures\\CovenantRenownRing")
+            border:SetPoint("CENTER", texture, "CENTER", 0, 0)
             border:SetDrawLayer("OVERLAY", 2)
-            border:SetHeight(iconSize * 1.35)
-            border:SetWidth(iconSize * 1.35)
+            border:SetHeight(iconSize * 0.85)
+            border:SetWidth(iconSize * 0.85)
 
         end
 
@@ -195,6 +196,26 @@ function HardcoreChallengeWheel:CreateRollingTextures(challengeData,
             -- Create glow animation on the highlight frame
             CreateGlowAnimation(highlightFrame)
             HardcoreChallengeWheel.reminderFrame:SetChallenge(challenge)
+
+            local serializedData = LibStub("AceSerializer-3.0"):Serialize(data)
+            HardcoreChallengeWheel:SendCommMessage("HCWHEEL",
+                                                   serializedData,
+                                                   "SAY")
+
+            if HardcoreChallengeWheel.db.profile.announceChallenge then
+
+                if HardcoreChallengeWheel.db.profile.announceChannel == "EMOTE" then
+
+                    SendChatMessage("has rolled a new challenge: " .. "[" ..
+                                        challenge.title .. "]", "EMOTE")
+                else
+                    SendChatMessage("I just rolled a new challenge: " .. "[" ..
+                                        challenge.title .. "]",
+                                    HardcoreChallengeWheel.db.profile
+                                        .announceChannel)
+                end
+
+            end
 
             -- Fade out surrounding textures after the highlight
             C_Timer.After(holdTime, function()

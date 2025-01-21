@@ -4,13 +4,9 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
 function HardcoreChallengeWheel:OpenIconPicker()
-    print("Memory usage before loading:", collectgarbage("count"), "KB")
-
     -- Load icon data
     local talentData = Icons:GetIconData()
 
-    -- Check memory usage after loading data
-    print("Memory usage after loading:", collectgarbage("count"), "KB")
     if #talentData == 0 then
         print("No talent icons available!")
         return
@@ -36,7 +32,6 @@ function HardcoreChallengeWheel:OpenIconPicker()
         icon:SetImageSize(32, 32)
         icon:SetWidth(40)
         icon:SetCallback("OnClick", function()
-            print("Selected Talent Icon:", talent.iconID)
             HardcoreChallengeWheel.customChallengeForm.challengeIconID =
                 talent.iconID
             AceConfigRegistry:NotifyChange("HardcoreChallengeWheel") -- Refresh options UI
@@ -53,7 +48,6 @@ function HardcoreChallengeWheel:OpenIconPicker()
         -- Release the main frame
         AceGUI:Release(widget)
         Icons:Release() -- Release the icons frame
-        print("Memory usage after release:", collectgarbage("count"), "KB")
 
     end)
 end

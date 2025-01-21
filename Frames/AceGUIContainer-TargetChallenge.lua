@@ -72,9 +72,11 @@ end
 local function ShowRightClickMenu(self)
     local dropdownItems = {
         {
-            text = "Hide Target Challenge",
+            text = "Hide",
             func = function()
-                HardcoreChallengeWheel:SetShowReminderFrame(false)
+                HardcoreChallengeWheel.db.profile.showTargetChallenge = false
+                HardcoreChallengeWheel:ToggleTargetFrame()
+                self:Hide()
             end,
             notCheckable = true
         }, {
@@ -120,7 +122,6 @@ local methods = {
 
         self:ApplyStatus() -- Restores size and position
 
-
     end,
 
     ["OnRelease"] = function(self)
@@ -160,6 +161,32 @@ local methods = {
 
         RestoreFramePosition(self) -- Restore position
 
+    end,
+
+    ["SetLoading"] = function(self, isLoading)
+        if isLoading then
+            if not self.spinner then
+                self.spinner = CreateFrame("Frame", nil, TargetFrame)
+                self.spinner:SetSize(22, 22)
+                self.spinner:SetPoint("CENTER", TargetFrame, "CENTER", 85, 50)
+
+                self.spinnerTexture = self.spinner:CreateTexture(nil, "ARTWORK")
+                self.spinnerTexture:SetTexture(
+                    "Interface\\AddOns\\HardcoreChallengeWheel\\Textures\\WaypoinMapPin")
+                self.spinnerTexture:SetAllPoints(self.spinner)
+
+                -- Rotation variables
+                self.spinner.rotation = 0
+                self.spinner:SetScript("OnUpdate", function(_, elapsed)
+                    self.spinner.rotation =
+                        self.spinner.rotation + (elapsed * 2 * math.pi / 1.5) -- Full rotation in 1.5 seconds
+                    self.spinnerTexture:SetRotation(self.spinner.rotation)
+                end)
+            end
+            self.spinner:Show()
+        else
+            if self.spinner then self.spinner:Hide() end
+        end
     end
 }
 
@@ -201,7 +228,6 @@ local function Constructor()
     challengeIcon:SetPoint("CENTER", frame, "CENTER", 90, 55)
 
     challengeIcon:SetScript("OnMouseDown", function(self, button)
-        print(frame:GetParent():GetName())
         if button == "RightButton" then ShowRightClickMenu(self) end
     end)
 
@@ -217,11 +243,11 @@ local function Constructor()
     challengeIconTexture:AddMaskTexture(mask)
 
     local border = challengeIcon:CreateTexture(nil, "OVERLAY")
-    border:SetTexture("Interface\\COMMON\\BlueMenuRing")
-    border:SetPoint("CENTER", challengeIconTexture, "CENTER", 7, -7)
+    border:SetTexture("Interface\\AddOns\\HardcoreChallengeWheel\\Textures\\CovenantRenownRing")
+    border:SetPoint("CENTER", challengeIconTexture, "CENTER",0, 0)
     border:SetDrawLayer("OVERLAY", 2)
-    border:SetHeight(60)
-    border:SetWidth(60)
+    border:SetHeight(32)
+    border:SetWidth(32)
 
     local widget = {
         localstatus = {},
