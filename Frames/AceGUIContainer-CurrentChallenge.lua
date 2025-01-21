@@ -5,6 +5,8 @@ Reminder Frame Container
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
+                                   "HardcoreChallengeWheel")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
 -- Lua APIs
@@ -80,17 +82,9 @@ local function SizerE_OnMouseDown(frame)
 end
 
 local function ShowRightClickMenu(parentFrame)
-    local swapModeText = ""
-
-    if HardcoreChallengeWheel.db.profile.minimalMode then
-        swapModeText = "Switch to detailed mode"
-    else
-        swapModeText = "Switch to minimal mode"
-    end
-
     local dropdownItems = {
         {
-            text = swapModeText,
+            text = "Switch to minimal mode",
             func = function()
                 HardcoreChallengeWheel:SwapReminderMode()
             end,
@@ -274,7 +268,7 @@ local function Constructor()
     local challengeIcon = CreateFrame("Frame", nil, frame)
     challengeIcon:SetSize(48, 48)
 
-    challengeIcon:SetPoint("LEFT", frame, "TOPLEFT", -15, -10)
+    challengeIcon:SetPoint("LEFT", frame, "TOPLEFT", -20, -5)
 
     challengeIcon:SetScript("OnMouseDown", function(self, button)
         if button == "RightButton" then
@@ -290,6 +284,22 @@ local function Constructor()
 
     local challengeIconTexture = challengeIcon:CreateTexture(nil, "BACKGROUND")
     challengeIconTexture:SetAllPoints(challengeIcon)
+
+    local mask = challengeIcon:CreateMaskTexture()
+    mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask",
+                    "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE") -- Built-in circular mask
+    mask:SetAllPoints()
+
+    -- Apply the mask to the texture
+    challengeIconTexture:AddMaskTexture(mask)
+
+
+    local border = challengeIcon:CreateTexture(nil, "OVERLAY")
+    border:SetTexture("Interface\\AddOns\\HardcoreChallengeWheel\\Textures\\CovenantRenownRing")
+    border:SetPoint("CENTER", challengeIconTexture, "CENTER", 0, 0)
+    border:SetDrawLayer("OVERLAY", 2)
+    border:SetHeight(52)
+    border:SetWidth(52)
 
     -- Container Support
     local content = CreateFrame("Frame", nil, frame)

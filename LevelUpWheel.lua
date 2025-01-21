@@ -1,12 +1,14 @@
 local frameWidth = 300 -- Width of the rolling area (to show more icons)
 local frameHeight = 100 -- Height of the rolling area
 local iconSize = 64 -- Size of each texture
-local holdTime = 5 
+local holdTime = 5
+local HardcoreChallengeWheel = LibStub("AceAddon-3.0"):GetAddon(
+                                   "HardcoreChallengeWheel")
 
 -- Create the rolling area frame
 local frame = CreateFrame("Frame", "RollingTexturesFrame", UIParent)
 frame:SetSize(frameWidth, frameHeight)
-frame:SetPoint("CENTER", UIParent, "CENTER", 0, 200) 
+frame:SetPoint("CENTER", UIParent, "CENTER", 0, 200)
 
 -- Function to create the glowing highlight animation
 local function CreateGlowAnimation(frame)
@@ -70,8 +72,9 @@ local function FadeOutFrame(frame, duration, startingAlpha)
 end
 
 -- Function to create and animate the rolling textures
-local function CreateRollingTextures(challengeData, highlightIndex, challenge,
-                                     rollDuration, reminderFrame)
+function HardcoreChallengeWheel:CreateRollingTextures(challengeData,
+                                                      highlightIndex, challenge,
+                                                      rollDuration)
     local iconsToShow = math.floor(frameWidth / iconSize) -- Number of icons to fit inside the rolling area
     local paddingIcons = iconsToShow * 2 -- Show more icons for smooth entry and exit
     local totalIcons = #challengeData + (paddingIcons * 2) -- Total icons including decorations
@@ -96,16 +99,41 @@ local function CreateRollingTextures(challengeData, highlightIndex, challenge,
         local texturePath = fullList[i].icon_path
 
         local texFrame = CreateFrame("Frame", nil, frame)
-        texFrame:SetSize(iconSize, iconSize)
+
+        if fullList[i].origin ~= nil then
+            texFrame:SetSize(iconSize * 0.7, iconSize * 0.7)
+        else
+            texFrame:SetSize(iconSize, iconSize)
+        end
 
         -- Calculate initial position to line up icons horizontally
         local offsetX = (i - 1 - paddingIcons) * iconSize
         texFrame:SetPoint("CENTER", frame, "CENTER", offsetX, 0)
 
         -- Main texture
-        local texture = texFrame:CreateTexture(nil, "BACKGROUND")
+        local texture = texFrame:CreateTexture(nil, "ARTWORK")
         texture:SetAllPoints(texFrame)
         texture:SetTexture(texturePath)
+
+        if fullList[i].origin ~= nil then
+            -- Create a circular mask
+            local mask = texFrame:CreateMaskTexture()
+            mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask",
+                            "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE") -- Built-in circular mask
+            mask:SetAllPoints()
+
+            -- Apply the mask to the texture
+            texture:AddMaskTexture(mask)
+
+            local border = texFrame:CreateTexture(nil, "OVERLAY")
+            border:SetTexture(
+                "Interface\\AddOns\\HardcoreChallengeWheel\\Textures\\CovenantRenownRing")
+            border:SetPoint("CENTER", texture, "CENTER", 0, 0)
+            border:SetDrawLayer("OVERLAY", 2)
+            border:SetHeight(iconSize * 0.85)
+            border:SetWidth(iconSize * 0.85)
+
+        end
 
         -- Store frame details
         table.insert(textureFrames, {frame = texFrame, startX = offsetX})
@@ -167,7 +195,27 @@ local function CreateRollingTextures(challengeData, highlightIndex, challenge,
 
             -- Create glow animation on the highlight frame
             CreateGlowAnimation(highlightFrame)
-            reminderFrame:SetChallenge(challenge)
+            HardcoreChallengeWheel.reminderFrame:SetChallenge(challenge)
+
+            local serializedData = LibStub("AceSerializer-3.0"):Serialize(data)
+            HardcoreChallengeWheel:SendCommMessage("HCWHEEL",
+                                                   serializedData,
+                                                   "SAY")
+
+            if HardcoreChallengeWheel.db.profile.announceChallenge then
+
+                if HardcoreChallengeWheel.db.profile.announceChannel == "EMOTE" then
+
+                    SendChatMessage("has rolled a new challenge: " .. "[" ..
+                                        challenge.title .. "]", "EMOTE")
+                else
+                    SendChatMessage("I just rolled a new challenge: " .. "[" ..
+                                        challenge.title .. "]",
+                                    HardcoreChallengeWheel.db.profile
+                                        .announceChannel)
+                end
+
+            end
 
             -- Fade out surrounding textures after the highlight
             C_Timer.After(holdTime, function()
@@ -189,5 +237,3 @@ local function CreateRollingTextures(challengeData, highlightIndex, challenge,
         end
     end)
 end
-
-HardcoreChallengeWheel_CreateRollingTextures = CreateRollingTextures
