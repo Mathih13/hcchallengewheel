@@ -69,7 +69,8 @@ function Challenges:OnInitialize()
             points = 10,
             iconPath = 236256,
             blText = "Aura Restriction",
-            description = "Choose one Aura and keep it active for the entire level. You cannot switch Auras."
+            description = "Choose one Aura and keep it active for the entire level. You cannot switch Auras.",
+            level = 16
         }, {
             name = "ShieldOfValor",
             title = "Shield of Valor",
@@ -85,31 +86,33 @@ function Challenges:OnInitialize()
             points = 15,
             iconPath = 135924,
             blText = "Seal Restriction",
-            description = "You must only use Seal of the Crusader and Judgement of the Crusader during combat."
+            description = "You must only use Seal of the Crusader and Judgement of the Crusader during combat.",
+            level = 6
         }, {
             name = "SingleTotemType",
             title = "Totemic Specialist",
             class = "Shaman",
             points = 10,
-            iconPath = 135861,
+            iconPath = 310733,
             blText = "Totem Restriction",
-            description = "Choose one totem element. You may only summon totems of that element."
+            description = "Choose two totem elements. You may only summon totems of that element.",
+            level = 10
         }, {
             name = "MeleeEnhancement",
             title = "Spirit of the Storm",
             class = "Shaman",
             points = 15,
-            iconPath = 136024,
+            iconPath = 136105,
             blText = "Combat Style",
-            description = "You must engage in melee combat using Enhancement abilities. Ranged spells are forbidden."
+            description = "You must engage in melee combat at all times."
         }, {
             name = "ShamanCastOnly",
-            title = "Elemental Communion",
+            title = "Elemental Mastery",
             class = "Shaman",
             points = 20,
             iconPath = 136048,
             blText = "Specialization Lock",
-            description = "You may only use spells with cast times. Instant cast spells are forbidden."
+            description = "You may only use spells with |cFFC79C6Ecast times|r. Instant cast spells are forbidden."
         }, {
             name = "ShamanNoCast",
             title = "Elemental Fury",
@@ -117,7 +120,7 @@ function Challenges:OnInitialize()
             points = 15,
             iconPath = 136024,
             blText = "Combat Style",
-            description = "You may only use instant cast spells. Spells with cast times are forbidden."
+            description = "You may only use |cFFC79C6Einstant|r cast spells. Spells with cast times are forbidden.\n\n\124cff00ccffUtility spells such as [Astral Recall] or [Ancestral Spirit] are allowed when out of combat.\124r"
         }, {
             name = "NoPoisons",
             title = "Clean Blade",
@@ -125,7 +128,8 @@ function Challenges:OnInitialize()
             points = 10,
             iconPath = 132273,
             blText = "Combat Restriction",
-            description = "You may not use poisons on your weapons."
+            description = "You may not use poisons on your weapons.",
+            level = 20
         }, {
             name = "NoLifeTap",
             title = "Frail",
@@ -133,7 +137,8 @@ function Challenges:OnInitialize()
             points = 10,
             iconPath = 136188,
             blText = "Combat Restriction",
-            description = "You may not use Life Tap."
+            description = "You may not use Life Tap.",
+            level = 6
         }, {
             name = "NoManaRecovery",
             title = "Inner Focus",
@@ -157,6 +162,203 @@ function Challenges:OnInitialize()
             points = 10,
             iconPath = 135616,
             description = "You may only use Guns as your ranged weapons."
+        }, {
+            name = "MageInstantOnly",
+            title = "Spellslinger",
+            class = "Mage",
+            points = 10,
+            iconPath = 135732,
+            blText = "Starting Achievement",
+            description = "You may only use spells with |cFFC79C6Einstant|r cast times. Spells with cast times are forbidden.\n\n\124cff00ccffUtility spells such as counjuration and portals are allowed when out of combat.\124r"
+        }, {
+            name = "ShamanOneTotem",
+            title = "Totemic Focus",
+            class = "Shaman",
+            points = 10,
+            iconPath = 136039,
+            blText = "Starting Achievement",
+            description = "You may only use one totem at a time. To summon a different totem you must replace it or wait until the current one expires.",
+            level = 6
+        }, {
+            name = "VoidwalkerOnly",
+            title = "Void Vanguard",
+            class = "Warlock",
+            points = 10,
+            iconPath = 136221,
+            blText = "Starting Achievement",
+            description = "You may only use the Voidwalker pet. Summoning or controlling any other demon is prohibited.",
+            level = 10
+        }, {
+            name = "ImpOnly",
+            title = "Fiery Companion",
+            class = "Warlock",
+            points = 8,
+            iconPath = 136218,
+            blText = "Starting Achievement",
+            description = "You may only use the Imp pet. Summoning or controlling any other demon is prohibited."
+        }, {
+            name = "SuccubusOnly",
+            title = "Demonic Mistress",
+            class = "Warlock",
+            points = 12,
+            iconPath = 136220,
+            blText = "Starting Achievement",
+            description = "You may only use the Succubus pet. Summoning or controlling any other demon is prohibited.",
+            level = 20
+        }, {
+            name = "FelhunterOnly",
+            title = "Demonic Devourer",
+            class = "Warlock",
+            points = 14,
+            iconPath = 136217,
+            blText = "Starting Achievement",
+            description = "You may only use the Felhunter pet. Summoning or controlling any other demon is prohibited.",
+            level = 30
+        }, {
+            name = "FireOnly",
+            title = "Firewalker",
+            class = "Warlock",
+            points = 15,
+            iconPath = 135807,
+            blText = "Burning Achievement",
+            description = "You may only cast Fire-based spells. All Shadow-based abilities are prohibited."
+        }, {
+            name = "ShadowOnly",
+            title = "Darkness Incarnate",
+            class = "Warlock",
+            points = 15,
+            iconPath = 136197,
+            blText = "Dark Achievement",
+            description = "You may only cast Shadow-based spells. All Fire-based abilities are prohibited."
+        }, {
+            name = "MaxRageOnly",
+            title = "Berserker's Fury",
+            class = "Warrior",
+            points = 12,
+            iconPath = 132344,
+            blText = "Starting Achievement",
+            description = "You may only spend rage when above |cFFC79C6E30|r rage."
+        }, {
+            name = "LowRageOnly",
+            title = "Anger Management",
+            class = "Warrior",
+            points = 10,
+            iconPath = 136090,
+            blText = "Starting Achievement",
+            description = "You may only spend rage when it is below |cFFC79C6E40|r. Once rage exceeds |cFFC79C6E40|r, you must wait until it drops below the threshold to use abilities that cost rage."
+        }, {
+            name = "RogueNoStealth",
+            title = "Bravado",
+            class = "Rogue",
+            points = 10,
+            iconPath = 132351,
+            blText = "Starting Achievement",
+            description = "You may not use stealth or abilities that require stealth.",
+            level = 10
+        }, {
+            name = "RogueNoBackstab",
+            title = "Fair Play",
+            class = "Rogue",
+            points = 10,
+            iconPath = 136035,
+            blText = "Starting Achievement",
+            description = "You may not use any abilities that require you to be behind an enemy.",
+            level = 4
+        }, {
+            name = "RogueBladesOnly",
+            title = "Blade Master",
+            class = "Rogue",
+            points = 10,
+            iconPath = 132269,
+            blText = "Starting Achievement",
+            description = "You may only use swords and daggers as your weapons.",
+            level = 10
+        }, {
+            name = "RogueMacesOnly",
+            title = "Enforcer",
+            class = "Rogue",
+            points = 10,
+            iconPath = 133477,
+            blText = "Starting Achievement",
+            description = "You may only use maces as your weapons.",
+            level = 10
+        }, {
+            name = "RogueNoComboConsume",
+            title = "Simple Minded",
+            class = "Rogue",
+            points = 10,
+            iconPath = 237555,
+            blText = "Starting Achievement",
+            description = "You cannot use abilities that consume combo points."
+        }, {
+            name = "RogueEnergyManagement",
+            title = "Conservation",
+            class = "Rogue",
+            points = 10,
+            iconPath = 135976,
+            blText = "Starting Achievement",
+            description = "You cannot allow your energy to reach |cFFC79C6E0|r."
+        }, {
+            name = "RogueComboPointLimit",
+            title = "Shallow Strategist",
+            class = "Rogue",
+            points = 10,
+            iconPath = 136035,
+            blText = "Starting Achievement",
+            description = "You may only consume |cFFC79C6E2|r combo points at a time."
+        }, {
+            name = "RogueNoCooldowns",
+            title = "Poor Planning",
+            class = "Rogue",
+            points = 10,
+            iconPath = 132301,
+            blText = "Starting Achievement",
+            description = "You may not use abilities that have a cooldown longer than |cFFC79C6E10|r seconds.",
+            level = 20
+        }, {
+            name = "WarriorDefensiveMastery",
+            title = "Defensive Mastery",
+            class = "Warrior",
+            points = 10,
+            iconPath = 132341,
+            blText = "Stance Restriction",
+            description = "You may only fight in Defensive Stance. You cannot switch stances.",
+            level = 12
+        }, {
+            name = "WarriorNoHeroics",
+            title = "No Heroics",
+            class = "Warrior",
+            points = 10,
+            iconPath = 132282,
+            blText = "Ability Limitation",
+            description = "You are not allowed to use Heroic Strike or Cleave.",
+            level = 20
+        }, {
+            name = "WarriorStanceDancer",
+            title = "Stance Dancer",
+            class = "Warrior",
+            points = 20,
+            iconPath = 236368,
+            blText = "Stance Switching",
+            description = "You can no longer switch stances at will. You must switch stances every time you defeat an enemy.",
+            level = 12
+        }, {
+            name = "WarriorBattleStanceOnly",
+            title = "Battle Master",
+            class = "Warrior",
+            points = 10,
+            iconPath = 132349,
+            blText = "Starting Achievement",
+            description = "You may only fight in Battle Stance. You cannot switch stances."
+        }, {
+            name = "InnerPeace",
+            title = "Conviction",
+            class = "Priest",
+            points = 20,
+            iconPath = 135926,
+            blText = "Utility Challenge",
+            description = "Inner Fire must always remain active during combat. You cannot allow it to expire or run out of charges.",
+            level = 12
         }
 
     }
@@ -191,7 +393,8 @@ function Challenges:GetAllChallenges()
             class = challenge.class,
             bl_text = challenge.blText,
             name = challenge.name,
-            origin = "built-in"
+            origin = "built-in",
+            level = challenge.level
         }
 
         -- Use the `name` field as the key
@@ -239,7 +442,8 @@ function Challenges:GetOptionsData()
             class = challenge.class,
             bl_text = challenge.blText,
             name = challenge.name,
-            origin = "built-in"
+            origin = "built-in",
+            level = challenge.level
         }
         table.insert(builtInChallenges, {key = challenge.name, data = newEntry})
     end
