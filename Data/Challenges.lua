@@ -29,7 +29,7 @@ function Challenges:OnInitialize()
             points = 10,
             iconPath = 134191,
             blText = "Starting Achievement",
-            description = "You are not allowed to eat any meat-based food or use meat-related items. Stick to vegetarian consumables like bread, fruit, and water."
+            description = "You are not allowed to eat any meat-based food or use meat-related items. Stick to vegetarian consumables like bread, fruit and tea."
         }, {
             name = "NightOwl",
             title = "Nightowl",
@@ -86,7 +86,7 @@ function Challenges:OnInitialize()
             points = 15,
             iconPath = 135924,
             blText = "Seal Restriction",
-            description = "You must only use Seal of the Crusader and Judgement of the Crusader during combat.",
+            description = "You must use \124cFFFFD100[Seal of the Crusader]\124r as your only seal. Using \124cFFFFD100[Judgement]\124r is allowed.",
             level = 6
         }, {
             name = "SingleTotemType",
@@ -104,7 +104,7 @@ function Challenges:OnInitialize()
             points = 15,
             iconPath = 136105,
             blText = "Combat Style",
-            description = "You must engage in melee combat at all times."
+            description = "You must engage in melee combat at all times when fighting an enemy."
         }, {
             name = "ShamanCastOnly",
             title = "Elemental Mastery",
@@ -162,14 +162,6 @@ function Challenges:OnInitialize()
             points = 10,
             iconPath = 135616,
             description = "You may only use Guns as your ranged weapons."
-        }, {
-            name = "MageInstantOnly",
-            title = "Spellslinger",
-            class = "Mage",
-            points = 10,
-            iconPath = 135732,
-            blText = "Starting Achievement",
-            description = "You may only use spells with |cFFC79C6Einstant|r cast times. Spells with cast times are forbidden.\n\n\124cff00ccffUtility spells such as counjuration and portals are allowed when out of combat.\124r"
         }, {
             name = "ShamanOneTotem",
             title = "Totemic Focus",
@@ -260,7 +252,7 @@ function Challenges:OnInitialize()
             title = "Fair Play",
             class = "Rogue",
             points = 10,
-            iconPath = 136035,
+            iconPath = 236375,
             blText = "Starting Achievement",
             description = "You may not use any abilities that require you to be behind an enemy.",
             level = 4
@@ -357,8 +349,123 @@ function Challenges:OnInitialize()
             points = 20,
             iconPath = 135926,
             blText = "Utility Challenge",
-            description = "Inner Fire must always remain active during combat. You cannot allow it to expire or run out of charges.",
+            description = "\124cFFFFD100[Inner Fire]\124r must always remain active during combat. You cannot allow it to expire or run out of charges.",
             level = 12
+        }, {
+            name = "WarlockCurseRotation",
+            title = "Curse Weaver",
+            class = "Warlock",
+            level = 8,
+            points = 10,
+            iconPath = 136227,
+            blText = "Starting Achievement",
+            description = "You cannot use the same curse on the same target twice in a row."
+        }, {
+            name = "WarlockManaRestriction",
+            title = "Power Hungry",
+            class = "Warlock",
+            level = 8,
+            points = 10,
+            iconPath = 237525,
+            blText = "Starting Achievement",
+            description = "You cannot allow you mana to fall below |cFFC79C6E35%|r."
+        }, {
+            name = "HunterTameNewPet",
+            title = "The Very Best",
+            class = "Hunter",
+            level = 12,
+            points = 10,
+            iconPath = 236161,
+            blText = "Starting Achievement",
+            description = "Tame a new pet and keep it as your active pet for the duration of the level. The pet cannot be of the same type as your current pet.\n\n\124cff00ccffYou can stable your current pet, but you cannot use it in combat.\124r"
+        }, {
+            name = "HunterNoTraps",
+            title = "Nature's Guardian",
+            class = "Hunter",
+            level = 20,
+            points = 10,
+            iconPath = 236809,
+            blText = "Starting Achievement",
+            description = "You cannot not use traps."
+        }, {
+            name = "HunterAspectCycling",
+            title = "Beastmaster",
+            class = "Hunter",
+            level = 10,
+            points = 10,
+            iconPath = 132166,
+            blText = "Starting Achievement",
+            description = "Whenever you defeat an enemy, you must change to a different aspect than the one you are currently using."
+        }, {
+            name = "PaladinSealCycling",
+            title = "Balanced Scales",
+            class = "Paladin",
+            level = 6,
+            points = 10,
+            iconPath = 135944,
+            blText = "Starting Achievement",
+            description = "You cannot use the same seal twice in a row."
+        }, {
+            name = "PaladinLongSeals",
+            title = "Preserved Rites",
+            class = "Paladin",
+            points = 10,
+            iconPath = 135951,
+            blText = "Starting Achievement",
+            description = "You cannot change seals if you already have an active seal. You may only cast \124cFFFFD100[Judgement]\124r if the seal has less than |cFFC79C6E5|r seconds remaining."
+        }, {
+            name = "DruidFormCycle",
+            title = "Master Shapshifter",
+            class = "Druid",
+            level = 20,
+            points = 10,
+            iconPath = 132132,
+            blText = "Starting Achievement",
+            description = "Whenever you defeat an enemy, you must change to a different form than the one you are currently using. You are not allowed to shapeshift until you defeat the next enemy.\n\n\124cff00ccffYou can only use one form at a time.\124r"
+        }, {
+            name = "DruidOverTimeOnly",
+            title = "Eternal Guardian",
+            class = "Druid",
+            level = 10,
+            points = 10,
+            iconPath = 132146,
+            blText = "Starting Achievement",
+            description = "You cannot use abilities that only do direct damage or healing. All abilities must have a DoT or HoT component.\n\n\124cff00ccffIndirect damage such as [Thorns] are allowed.\124r"
+        }, {
+            name = "PaladinNoSelfHeal",
+            title = "Vow of Sacrifice",
+            class = "Paladin",
+            level = 20,
+            points = 10,
+            iconPath = 135982,
+            blText = "Starting Achievement",
+            description = "You cannot use any of your direct healing abilities on yourself."
+        }, {
+            name = "OnlyMeat",
+            title = "Carnivore",
+            class = "All",
+            points = 10,
+            iconPath = 134025,
+            blText = "Starting Achievement",
+            description = "You are not allowed to eat any plant-based food. Stick to animal-based consumables like meat, fish and dairy products."
+        }, {
+            name = "MageSpellRotation",
+            title = "Invoker",
+            class = "Mage",
+            level = 8,
+            points = 10,
+            iconPath = 135732,
+            blText = "Starting Achievement",
+            description = "You cannot cast a spell from the same school on the same target twice in a row. AoE spells are not excempt from this restriction."
+        }, {
+            name = "PriestHealRotation",
+            title = "Chanter's Flow",
+            class = "Priest",
+            level = 16,
+            points = 20,
+            iconPath = 237540,
+            blText = "Starting Achievement",
+            description = "You cannot cast the same healing spell twice in a row. Power Word: Shield counts as a healing spell."
         }
 
     }

@@ -15,7 +15,8 @@ local defaults = {
             ["NightOwl"] = false,
             ["SolitaryStruggle"] = false,
             ["FishingPoleOnly"] = false,
-            ["CrusaderOnly"] = false
+            ["CrusaderOnly"] = false,
+            ["Nudist"] = false
         },
         defaultDisabledChallenges = {"NoHit"},
         class = UnitClass("player"),
