@@ -15,7 +15,8 @@ local defaults = {
             ["NightOwl"] = false,
             ["SolitaryStruggle"] = false,
             ["FishingPoleOnly"] = false,
-            ["CrusaderOnly"] = false
+            ["CrusaderOnly"] = false,
+            ["Nudist"] = false
         },
         defaultDisabledChallenges = {"NoHit"},
         class = UnitClass("player"),
@@ -161,7 +162,14 @@ function HardcoreChallengeWheel:GetAppropriateChallenges()
 
             if challenge.class == "All" or challenge.class == class then
 
-                table.insert(appropriateChallenges, challenge)
+                if challenge.level then
+                    local level = UnitLevel("player")
+                    if challenge.level <= level then
+                        table.insert(appropriateChallenges, challenge)
+                    end
+                else
+                    table.insert(appropriateChallenges, challenge)
+                end
 
             end
         end

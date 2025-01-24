@@ -368,16 +368,26 @@ function HardcoreChallengeWheel:BuildOptions()
     for index, entry in ipairs(allChallenges.builtInChallenges) do
         local key = entry.key
         local challenge = entry.data
-        local description = challenge.description
+        local description
+
+        if challenge.level then
+            description = "|cFFC79C6ERequires Level " .. challenge.level ..
+                              "|r\n" .. challenge.description
+        else
+            description = challenge.description
+        end
 
         local width = "normal"
 
         if challenge.class ~= "All" and challenge.class ~=
             HardcoreChallengeWheel.db.profile.class then
             challenge.title = "|cFF808080" .. challenge.title .. "|r"
-            description = "|cFFFFD100[" .. challenge.class .. "]|r\n\n" ..
+            description = "|cFFFFD100[" .. challenge.class .. "]|r\n" ..
                               description ..
                               "\n\n|cFF808080This challenge is not available for your class.|r"
+        else
+            description = "|cFFFFD100[" .. challenge.class .. "]|r\n" ..
+                              description
         end
 
         if HardcoreChallengeWheel.db.profile.challenges[challenge.name] == nil then
